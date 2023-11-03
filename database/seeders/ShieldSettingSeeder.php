@@ -1,0 +1,39 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
+use BezhanSalleh\FilamentShield\Models\Setting;
+
+class ShieldSettingSeeder extends Seeder
+{
+    /**
+    * Run the database seeds.
+    *
+    * @return void
+    */
+    public function run()
+    {
+        if (Schema::hasTable('filament_shield_settings')) {
+            config(['filament-shield.settings.enabled' => true]);
+        }
+
+        /** @var array[string]mixed $settingKeys */
+        $settingKeys = config('filament-shield');
+
+        if (Setting::count()) {
+            Setting::truncate();
+        }
+
+        foreach ($settingKeys as $key => $value) {
+            Setting::create([
+                'key' => $key,
+                'value' => $value,
+                'default' => $value
+            ]);
+        }
+
+        $this->command->info('Shield settings created.');
+    }
+}
